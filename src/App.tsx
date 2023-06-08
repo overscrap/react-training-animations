@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { Variants, motion } from "framer-motion";
-import { useRef } from "react";
+import { Variants, motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
 
-const Wrapper = styled.div`
-  height: 100vh;
+const Wrapper = styled(motion.div)`
+  height: 200vh;
   width: 100vw;
   display: flex;
   justify-content: center;
@@ -36,18 +36,42 @@ const boxVariants: Variants = {
 
 function App() {
   const biggerBoxRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const rotateZ = useTransform(x, [-800, 800], [-360, 360]);
+  const gradient = useTransform(
+    x,
+    [-800, 800],
+    ["linear-gradient(135deg,rgb(0, 238, 222),rgb(0, 48, 238))",
+      "linear-gradient(135deg,rgb(32, 238, 0),rgb(238, 218, 0))"
+    ]
+  );
+  const { scrollY, scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 5]);
+  // useMotionValueEvent(rotateZ, "change", (e) => {
+  //   console.log(e)
+  // })
+
+  // useMotionValueEvent(scrollY, "change", (e) => {
+  //   console.log("scrollY:", e);
+  // });
+
+  // useMotionValueEvent(scrollYProgress, "change", (e) => {
+  //   console.log("scrollYProgress:", e);
+  // });
   return (
-    <Wrapper>
+    <Wrapper style={{ background: gradient }}>
+      <button onClick={() => x.set(200)}>click me</button>
       <BiggerBox ref={biggerBoxRef}>
         <Box
-          drag
+          style={{ x, rotateZ, scale }}
+          drag="x"
           dragSnapToOrigin
-          dragElastic={0}
-          dragConstraints={biggerBoxRef}
-          variants={boxVariants}
-          whileHover="hover"
-          whileTap="click"
-          whileDrag="drag"
+        // dragElastic={0}
+        // dragConstraints={biggerBoxRef}
+        // variants={boxVariants}
+        // whileHover="hover"
+        // whileTap="click"
+        // whileDrag="drag"
         />
       </BiggerBox>
     </Wrapper>
