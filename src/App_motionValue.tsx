@@ -40,7 +40,7 @@ function App() {
     ]
   );
   const { scrollY, scrollYProgress } = useScroll();
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 2]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 5]);
 
   return (
     <Wrapper style={{ background: gradient }}>
